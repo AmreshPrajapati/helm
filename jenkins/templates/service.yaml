@@ -11,6 +11,14 @@ spec:
     care: {{ .Values.app.name }}
   ports:
     - port: {{ .Values.app.service.port }}       
-      targetPort: {{ .Values.app.container.port }}
+      targetPort: {{ .Values.app.container.portone }}
+      protocol: TCP
+      name: ui
+    - port: {{ .Values.app.container.porttwo }} 
+      targetPort: {{ .Values.app.container.porttwo }}      
+      protocol: TCP
+      name: slave
+    - port: 80     
+      targetPort: {{ .Values.app.container.portone }}
       protocol: TCP
       name: http

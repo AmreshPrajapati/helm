@@ -23,9 +23,9 @@ spec:
           image: {{ .Values.app.container.image }} 
           imagePullPolicy: Always 
           ports:
-            - containerPort: {{ .Values.app.container.port }}
+            - containerPort: {{ .Values.app.container.portone }}
               protocol: TCP
-            - containerPort: {{ .Values.app.container.port }}
+            - containerPort: {{ .Values.app.container.porttwo }}
               protocol: TCP
           securityContext:
             allowPrivilegeEscalation: false

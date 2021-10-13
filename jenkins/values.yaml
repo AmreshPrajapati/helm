@@ -6,7 +6,8 @@ app:
   container:
     image: cloudbees/jenkins-enterprise
     imagePullPolicy: IfNotPresent
-    port: 8080
+    portone: 8080
+    porttwo: 50000
     resources:
       limits:
         cpu: "1"
@@ -40,6 +41,7 @@ app:
     port: 8080 
     protocol: TCP
     name: http
+    
   ingress:
     enabled: false
     annotations:
