@@ -15,7 +15,7 @@ app:
         cpu: "1"
         memory: "2048Mi"
     autoscaling:
-      enabled: false
+      enabled: true
       minReplicas: 1
       maxReplicas: 5
       CPUUtilizationPercentage: 80
@@ -29,9 +29,11 @@ app:
       timeoutSeconds: 30
     env:
       - key: Name
-        value: jenkins-one
+        value: jenkins-dev
       - key: Environment
         value: dev
+      - key: JAVA_OPTS
+        value: -Xmx2048m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 
   service:
     enabled: true
     type: NodePort

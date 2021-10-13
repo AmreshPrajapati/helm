@@ -24,9 +24,13 @@ spec:
           imagePullPolicy: Always 
           ports:
             - containerPort: {{ .Values.app.container.port }}
+              protocol: TCP
+            - containerPort: {{ .Values.app.container.port }}
+              protocol: TCP
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
+            runAsUser: 0
             capabilities:
               add: ["NET_ADMIN", "SYS_TIME"]   
           resources:
