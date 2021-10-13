@@ -1,0 +1,62 @@
+app:
+  name: dev-jenkins
+  namespace: dev
+  group: dev
+  env: dev
+  container:
+    image: cloudbees/jenkins-enterprise
+    imagePullPolicy: IfNotPresent
+    port: 8080
+    resources:
+      limits:
+        cpu: "1"
+        memory: "2048Mi"
+      requests:
+        cpu: "1"
+        memory: "2048Mi"
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 5
+      CPUUtilizationPercentage: 80
+      MemoryUtilizationPercentage: 80     
+    readinessProbe:
+      httpGet:
+        path: /login
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 30
+    env:
+      - key: Name
+        value: jenkins-one
+      - key: Environment
+        value: dev
+  service:
+    enabled: true
+    type: NodePort
+    port: 8080 
+    protocol: TCP
+    name: http
+  ingress:
+    enabled: false
+    annotations:
+      class: alb
+      scheme: internet-facing
+      target-type: ip
+      healthcheck-protocol: HTTP
+      healthcheckpath: /
+      group.name: dev
+      listen-ports: '[{"HTTP": 80}]'
+      backend-protocol: HTTP 
+      path: /
+    hosts:
+      http: 
+        paths:
+          - pathType: Prefix
+            path: /login
+            backend:
+              service:
+                name: dev
+                port:
+                  number: 8080

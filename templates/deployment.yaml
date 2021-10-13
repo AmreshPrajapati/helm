@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    care: {{ .Values.app.name }}
+    group: {{ .Values.app.group }}
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      care: {{ .Values.app.name }}
+  template:
+    metadata:
+      labels:
+        care: {{ .Values.app.name }}
+        group: {{ .Values.app.group }}
+        env: {{ .Values.app.env }}
+    spec:
+      containers:
+        - name: {{ .Values.app.name }}
+          image: {{ .Values.app.container.image }} 
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: {{ .Values.app.container.port }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              add: ["NET_ADMIN", "SYS_TIME"]   
+          resources:
+            limits:
+              cpu: {{ .Values.app.container.resources.limits.cpu }}
+              memory: {{ .Values.app.container.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.app.container.resources.requests.cpu }}
+              memory: {{ .Values.app.container.resources.requests.memory }}        
+          readinessProbe: 
+            httpGet:
+              path: {{ .Values.app.container.readinessProbe.httpGet.path }}
+              port: {{ .Values.app.container.readinessProbe.httpGet.port }}
+            initialDelaySeconds: {{ .Values.app.container.readinessProbe.initialDelaySeconds }}  
+            periodSeconds: {{ .Values.app.container.readinessProbe.periodSeconds }} 
+            timeoutSeconds: {{ .Values.app.container.readinessProbe.timeoutSeconds }}                     
+          envFrom:
+            {{- range .Values.app.container.config }}
+            - configMapRef:
+                name: {{ .name }}
+            {{- end}}
+          env:
+            {{- range .Values.app.container.env }}
+            - name: {{ .key}}
+              value: {{ .value}}
+            {{- end}}
