@@ -1,10 +1,10 @@
 app:
   name: dev-jenkins
-  namespace: dev
+  namespace: dev-jenkins
   group: dev
   env: dev
   container:
-    image: cloudbees/jenkins-enterprise
+    image: cloudbees/jenkins-operations-center:2.249.3.2
     imagePullPolicy: IfNotPresent
     portone: 8080
     porttwo: 50000
@@ -35,6 +35,14 @@ app:
         value: dev
       - key: JAVA_OPTS
         value: -Xmx2048m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 
+    volumeMounts:
+        mountPath: /var/jenkins_home
+        name: jenkins
+  volumes:
+        name: jenkins
+        persistentVolumeClaim:
+          claimName: jenkins-claim
+   
   service:
     enabled: true
     type: NodePort
@@ -43,7 +51,7 @@ app:
     name: http
     
   ingress:
-    enabled: false
+    enabled: true
     annotations:
       class: alb
       scheme: internet-facing

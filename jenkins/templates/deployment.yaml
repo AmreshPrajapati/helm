@@ -57,3 +57,10 @@ spec:
             - name: {{ .key}}
               value: {{ .value}}
             {{- end}}
+          volumeMounts:
+          - mountPath: {{ .Values.app.container.volumeMounts.mountPath }}
+            name: {{ .Values.app.container.volumeMounts.name }}
+      volumes:
+      - name: {{ .Values.app.volumes.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.app.volumes.persistentVolumeClaim.claimName }}
